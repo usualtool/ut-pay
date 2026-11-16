@@ -1,0 +1,20 @@
+{
+    "name": "usualtool/ut-pay",
+    "description": "UsualTool Framework Payment SDK (Alipay / Wechat / Paypal / Douyin ecpay) with runtime config factories.",
+    "keywords": ["UsualTool Framework", "payment", "alipay", "wechat", "paypal", "douyin"],
+    "license": "Apache-2.0",
+    "authors": [{
+        "name": "Huang Hui",
+        "email": "usualtool@qq.com"
+    }],
+    "require": {
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-openssl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "usualtool\\Pay\\": "src/"
+        }
+    }
+}
