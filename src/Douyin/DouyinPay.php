@@ -6,10 +6,13 @@ namespace usualtool\Pay\Douyin;
 class DouyinPay{
     private $appid;
     private $salt;
-    private $gate = "https://developer.toutiao.com/api/apps/ecpay/v1/";
-    public function __construct($appid,$salt){
+    private $gate;
+    public function __construct($appid,$salt,$sandbox=false){
         $this->appid=trim((string)$appid);
         $this->salt=trim((string)$salt);
+        $this->gate=$sandbox
+            ? "https://open-sandbox.douyin.com/api/apps/ecpay/v1/"
+            : "https://developer.toutiao.com/api/apps/ecpay/v1/";
     }
     public function Ready(){
         return $this->appid!="" && $this->salt!="";
@@ -18,18 +21,23 @@ class DouyinPay{
      * 官方签名规则
      */
     public function Sign($params){
-        ksort($params);
-        $str="";
+        $list=array();
         foreach($params as $k=>$v){
-            if($k=="sign" || $k=="app_id" || $k=="other_settle_params" || $k=="thirdparty_id"){
+            if($k=="sign" || $k=="app_id" || $k=="other_settle_params" || $k=="thirdparty_id" || $k=="prod_id"){
                 continue;
             }
             if(is_array($v)){
                 $v=json_encode($v,JSON_UNESCAPED_UNICODE);
             }
-            $str.=$v;
+            $v=trim((string)$v);
+            if($v==="" || $v==="null"){
+                continue;
+            }
+            $list[]=$v;
         }
-        return md5($str.$this->salt);
+        $list[]=$this->salt;
+        sort($list,SORT_STRING);
+        return md5(implode("&",$list));
     }
     /* 
      * 创建担保交易订单
